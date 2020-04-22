@@ -1,6 +1,8 @@
 import requests
 import random
 import json
+import execjs
+import time
 from lxml import etree
 
 USER_AGENTS = [
@@ -62,7 +64,7 @@ def get_question():
     host = 'hfut.xuetangx.com'
     referer = 'https://hfut.xuetangx.com/lms'
 
-    # 需要F12后在network中查看headers下的data信息
+    # 需要F12后在network中查看XHR中subject的headers下的data信息
     data = {
         "product_id":"",
         "homework_id":"",
@@ -88,7 +90,7 @@ def get_question_from_txt(addr):
     question=question_tmp['data']['question_data']
     return question
     
-def get_answer(question):
+def get_answer1(question):
     url = 'http://shuakeya.top/api/web.php'
     cookie = ''
     host = 'shuakeya.top'
@@ -114,7 +116,7 @@ def get_answer(question):
         else:
             print("ERROR:"+str(req.status_code))
             break
-            
+        
 def get_answer2(question):
     url = 'https://souti.lyoo.xyz/'
     cookie = ''
@@ -140,9 +142,47 @@ def get_answer2(question):
         else:
             print("ERROR:"+str(req.status_code))
             break
-            
+
+def get_answer3(question):
+    api = 'https://www.150s.cn/topic/getSubject'
+    url = 'https://www.150s.cn/'
+    # 调用本地js脚本，需要node.js或其他环境
+    node = execjs.get()
+    file = 'a.js'
+    ctx = node.compile(open(file).read())
+    cnt = 1
+    ff = open("44.txt", mode='w+')
+    for i in question:
+        session = requests.Session()
+        h = {
+            'User-Agent':random.choice(USER_AGENTS)
+        }
+        f = session.get(url, headers=h)
+        print("----第 %d 题----" %cnt)
+        i['stem'] = i['stem'].replace('\n','')
+        i['stem'] = i['stem'].replace('\t','')
+        js = 'searchProblem("{0}")'.format(i['stem'])
+        sec = ctx.eval(js)
+        data = {
+            "secret":sec,
+            "title":i['stem']
+        }
+        req = session.post(api, data=data, headers=h)
+        tmp_data = json.loads(req.text)
+        print("题目： "+tmp_data['title'])
+        print("答案： "+tmp_data['answer'])
+        print("")
+        ff.write("第"+str(cnt)+"题 : ")
+        ff.write(tmp_data['title']+'\n')
+        ff.write("答案： "+tmp_data['answer']+'\n\n')
+        ff.write("------------")
+        ff.flush()
+        cnt=cnt+1
+        time.sleep(1)
+    ff.close()
+
 if __name__ == '__main__':
     #question = get_question()
     question = get_question_from_txt("11.txt")
     #print(question)
-    get_answer(question)
+    get_answer3(question)
