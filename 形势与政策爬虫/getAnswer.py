@@ -83,7 +83,7 @@ def get_question():
     return question
 
 def get_question_from_txt(addr):
-    f=open(addr,"r", encoding='gbk')
+    f=open(addr,"r", encoding='gbk')#如果报错编码有问题就把'gbk'换成'UTF-8'
     question_tmp=f.read()
     f.close()
     question_tmp = json.loads(question_tmp)
@@ -161,7 +161,7 @@ def get_answer3(question):
         print("----第 %d 题----" %cnt)
         i['stem'] = i['stem'].replace('\n','')
         i['stem'] = i['stem'].replace('\t','')
-        js = 'searchProblem("{0}")'.format(i['stem'])
+        js = "searchProblem('{0}')".format(i['stem'])
         sec = ctx.eval(js)
         data = {
             "secret":sec,
@@ -175,14 +175,16 @@ def get_answer3(question):
         ff.write("第"+str(cnt)+"题 : ")
         ff.write(tmp_data['title']+'\n')
         ff.write("答案： "+tmp_data['answer']+'\n\n')
-        ff.write("------------")
+        ff.write("------------\n")
         ff.flush()
         cnt=cnt+1
-        time.sleep(1)
+        time.sleep(1)#防止请求太快被ban IP
     ff.close()
 
 if __name__ == '__main__':
-    #question = get_question()
-    question = get_question_from_txt("11.txt")
-    #print(question)
-    get_answer3(question)
+    question = get_question()
+    #question = get_question_from_txt("11.txt")
+    
+    #用哪个选哪个
+    #get_answer2(question)
+    #get_answer3(question)
