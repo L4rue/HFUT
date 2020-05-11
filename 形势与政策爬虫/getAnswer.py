@@ -82,6 +82,33 @@ def get_question():
     question=question_tmp['data']['question_data']
     return question
 
+def get_exam():
+    cookie = ""
+    url = ""
+    host = 'hfut.xuetangx.com'
+    headers = {
+        'User-agent': random.choice(USER_AGENTS),
+        'Cookie': cookie,
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Host': host,
+        'Referer': 'https://hfut.xuetangx.com/exam/37690/80216/'
+    }
+    res = requests.get(url,headers=headers)
+    f = open("exam.txt","w+")
+    f.write(res.text)
+    f.close()
+    retutn
+    
+ def get_exam_question_from_txt(addr):
+    f=open(addr,"r", encoding='gbk')
+    question_tmp=f.read()
+    f.close()
+    question_tmp = json.loads(question_tmp)
+    question=question_tmp['question_data']
+    return question
+
 def get_question_from_txt(addr):
     f=open(addr,"r", encoding='gbk')#如果报错编码有问题就把'gbk'换成'UTF-8'
     question_tmp=f.read()
@@ -182,9 +209,13 @@ def get_answer3(question):
     ff.close()
 
 if __name__ == '__main__':
-    question = get_question()
+    #question = get_question()
     #question = get_question_from_txt("11.txt")
     
     #用哪个选哪个
     #get_answer2(question)
     #get_answer3(question)
+    
+    get_exam()
+    question = get_exam_question_from_txt("exam.txt")
+    get_answer3(question)
