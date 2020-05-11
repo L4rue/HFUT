@@ -12,3 +12,8 @@ get_answer1不用额外装东西，但是那个网站经常挂掉，不太稳定
 get_answer2用到了lxml，get_answer3用到了PyExecJS，和node.js；按需安装  
 
 具体方法自行百度
+
+由于考试是分页的，所以需要分两次获取题目信息。  
+两个链接大概这个样子，“\*”自行替换：
+>https://hfut.xuetangx.com/api/paper/subject/E+\*\*\*\*\*+\*\*\*\*/E+\*\*\*\*\*+\*\*\*\*-\*\*/?offset=0&limit=50&type=1
+https://hfut.xuetangx.com/api/paper/subject/E+\*\*\*\*\*+\*\*\*\*/E+\*\*\*\*\*+\*\*\*\*-\*\*/?offset=50&limit=50&type=1
